@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NUSANTARA CLASH</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  background:#07111f;
+  color:white;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+button{
+  border:0;
+  cursor:pointer;
+}
+
+.screen{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:25px;
+}
+
+h1{
+  font-size:42px;
+  text-align:center;
+  color:#ffd43b;
+  text-shadow:0 4px 0 #8b5200;
+  margin-bottom:8px;
+}
+
+.subtitle{
+  color:#b9c7d9;
+  margin-bottom:25px;
+}
+
+.panel{
+  width:min(1000px,100%);
+  background:#101d30;
+  border:2px solid #263b58;
+  border-radius:20px;
+  padding:22px;
+  box-shadow:0 15px 40px #0008;
+}
+
+h2{
+  margin-bottom:15px;
+  color:#ffd43b;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:12px;
+}
+
+.card{
+  background:#182941;
+  border:2px solid #304866;
+  border-radius:15px;
+  padding:15px;
+  text-align:center;
+  transition:.2s;
+}
+
+.card:hover{
+  transform:translateY(-4px);
+  border-color:#ffd43b;
+}
+
+.card.selected{
+  border-color:#00e5ff;
+  box-shadow:0 0 20px #00e5ff55;
+}
+
+.hero-icon{
+  font-size:50px;
+  margin-bottom:8px;
+}
+
+.card b{
+  display:block;
+  font-size:18px;
+  margin-bottom:5px;
+}
+
+.card small{
+  color:#aebed0;
+}
+
+.arena{
+  font-size:35px;
+}
+
+.btn{
+  background:#ffd43b;
+  color:#171717;
+  font-weight:bold;
+  padding:13px 22px;
+  border-radius:12px;
+  margin-top:18px;
+  font-size:16px;
+}
+
+.btn:hover{
+  filter:brightness(1.1);
+  transform:scale(1.02);
+}
+
+.btn.blue{
+  background:#00c8ff;
+}
+
+.btn.red{
+  background:#ff5964;
+  color:white;
+}
+
+.hidden{
+  display:none!important;
+}
+
+/* GAME */
+#game{
+  padding:12px;
+}
+
+.topbar{
+  width:min(1100px,100%);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+.playerInfo{
+  width:42%;
+}
+
+.name{
+  font-weight:bold;
+  margin-bottom:5px;
+}
+
+.hpOuter{
+  height:24px;
+  background:#222;
+  border:2px solid white;
+  border-radius:20px;
+  overflow:hidden;
+}
+
+.hp{
+  height:100%;
+  width:100%;
+  background:#28d65c;
+  transition:.25s;
+}
+
+.enemy .hp{
+  background:#ff4d5d;
+}
+
+.timer{
+  font-size:32px;
+  font-weight:bold;
+  color:#ffd43b;
+  min-width:70px;
+  text-align:center;
+}
+
+.stage{
+  width:min(1100px,100%);
+  height:480px;
+  border:3px solid #3d5778;
+  border-radius:18px;
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(#78c9f2 0 55%,#61a84e 55%);
+}
+
+/* ARENA BACKGROUNDS */
+.stage.sawit{
+  background:
+  linear-gradient(#7bcaf0 0 52%,#4d8d3c 52%);
+}
+
+.stage.mbg{
+  background:
+  linear-gradient(#a7d8ed 0 55%,#777 55%);
+}
+
+.stage.dpr{
+  background:
+  linear-gradient(#8ec8e8 0 55%,#a79a77 55%);
+}
+
+.stage.desa{
+  background:
+  linear-gradient(#8ed4f4 0 55%,#77a84b 55%);
+}
+
+.stage.pelabuhan{
+  background:
+  linear-gradient(#75c9ec 0 50%,#367da0 50%);
+}
+
+/* Simple scenery */
+.scenery{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+
+.tree{
+  position:absolute;
+  font-size:70px;
+}
+
+.building{
+  position:absolute;
+  bottom:35%;
+  font-size:110px;
+}
+
+.ground{
+  position:absolute;
+  bottom:0;
+  height:25%;
+  width:100%;
+  background:#4b713c55;
+}
+
+.fighter{
+  position:absolute;
+  width:90px;
+  height:130px;
+  bottom:25%;
+  transition:left .08s;
+  text-align:center;
+  z-index:5;
+}
+
+.fighter .body{
+  font-size:65px;
+  filter:drop-shadow(0 8px 3px #0008);
+}
+
+.fighter .shadow{
+  width:75px;
+  height:15px;
+  background:#0007;
+  border-radius:50%;
+  margin:auto;
+}
+
+#p1{
+  left:12%;
+}
+
+#p2{
+  left:78%;
+}
+
+.controls{
+  width:min(1100px,100%);
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+
+.control{
+  min-width:75px;
+  min-height:55px;
+  background:#17283f;
+  color:white;
+  border:2px solid #39516d;
+  border-radius:12px;
+  font-weight:bold;
+  font-size:15px;
+}
+
+.control:active{
+  transform:scale(.94);
+  background:#294766;
+}
+
+.message{
+  position:absolute;
+  top:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#07111ddd;
+  padding:12px 25px;
+  border-radius:20px;
+  font-size:22px;
+  font-weight:bold;
+  z-index:20;
+}
+
+@media(max-width:650px){
+  h1{font-size:30px}
+  .stage{height:400px}
+  .fighter{transform:scale(.8)}
+  .controls{gap:6px}
+  .control{min-width:62px}
+}
+</style>
+</head>
+
+<body>
+
+<!-- MENU -->
+<section id="menu" class="screen">
+
+<h1>🇮🇩 NUSANTARA CLASH</h1>
+<p class="subtitle">Pertarungan Para Pejuang Nusantara</p>
+
+<div class="panel">
+
+<h2>🥊 Pilih Hero</h2>
+
+<div class="grid" id="heroes"></div>
+
+<h2 style="margin-top:25px">🗺️ Pilih Arena</h2>
+
+<div class="grid" id="
